@@ -19,10 +19,53 @@
         clearTimeout(this.timerToken);
     }
 
+    
+
 }
 
+class Page {
+    el: HTMLElement;
+    status: string;
+    url: String;
+    constructor(url: String) {
+        this.url = url;
+        this.status = "empty";
+        this.el = document.createElement('div');
+    }
+     
+    load() {
+        var _el = this.el;
+        
+        $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent(<string>this.url) + '&callback=?', (data) => {
+            this.el.innerHTML = data.contents;
+        })
+            .done(() => {this.status = "done";})
+            .fail(() => { this.status = "fail";});
+    }
+}
+
+class Currency {
+    private _clabel: String;
+
+    constructor() {
+    }
+
+    public get clabel(): String {
+        return this._clabel;
+    }
+    public set clabel(value: String) {
+        this._clabel = value;
+    }
+}
+
+var greeter, page_cadBTC;
+
 window.onload = () => {
-    var el = document.getElementById('content');
-    var greeter = new Greeter(el);
+    var gel = document.getElementById('content');
+
+    greeter = new Greeter(gel);
     greeter.start();
+
+    page_cadBTC = new Page('https://www.canadianbitcoins.com');
+    page_cadBTC.load();
 };
